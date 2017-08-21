@@ -34,6 +34,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Controller
 @SpringBootApplication
 public class Main {
@@ -44,8 +47,11 @@ public class Main {
   @Autowired
   private DataSource dataSource;
 
+  private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
   public static void main(String[] args) throws Exception {
-    System.out.println("SpringApplication.run");
+    System.out.println("Print 'SpringApplication.run' by System.out");
+    logger.info("Print 'SpringApplication.run' by logger");
     SpringApplication.run(Main.class, args);
   }
 
@@ -56,6 +62,7 @@ public class Main {
 
   @RequestMapping("/db")
   String db(Map<String, Object> model) {
+    System.out.println("dbUrl:" + dbUrl);
     try (Connection connection = dataSource.getConnection()) {
       Statement stmt = connection.createStatement();
       stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
@@ -77,6 +84,7 @@ public class Main {
 
   @Bean
   public DataSource dataSource() throws SQLException {
+    System.out.println("dbUrl:" + dbUrl);
     if (dbUrl == null || dbUrl.isEmpty()) {
       return new HikariDataSource();
     } else {
