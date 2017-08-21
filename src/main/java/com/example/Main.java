@@ -75,6 +75,7 @@ public class Main {
       }
 
       model.put("records", output);
+      model.put("dbUrl", dbUrl);
       return "db";
     } catch (Exception e) {
       model.put("message", e.getMessage());
