@@ -5,9 +5,9 @@
 
 
 <div class="container">
-  <h1>Database Output</h1>
-  <h2>Heroku Local</h2>
-  <p th:text="${dbUrl}">dbUrl</p>
+  <h1>Database Output - SHA256</h1>
+  <h2>Uploaded from Heroku Local</h2>
+  <!--<p th:text="${dbUrl}">dbUrl</p>-->
   <ul th:each="record : ${records}">
     <li th:text="${record}"/>
   </ul>

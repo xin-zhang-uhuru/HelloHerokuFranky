@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
+import java.security.MessageDigest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,43 @@ public class Main {
       model.put("records", output);
       model.put("dbUrl", dbUrl);
       return "db";
+    } catch (Exception e) {
+      model.put("message", e.getMessage());
+      return "error";
+    }
+  }
+
+  @RequestMapping("/sha256")
+  String sha256(Map<String, Object> model) {
+    try (Connection connection = dataSource.getConnection()) {
+      Statement stmt = connection.createStatement();
+      ResultSet rs = stmt.executeQuery("SELECT sfid, email FROM helloherokupostgresql.contact");
+      StringBuilder stb = new StringBuilder();
+
+      ArrayList<String> output = new ArrayList<String>();
+      while (rs.next()) {
+        //output.add("Read from DB: " + rs.getTimestamp("tick"));
+        String sfid = rs.getString("sfid");
+        String email = rs.getString("email");
+        byte[] cipher_byte;
+        
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(email.getBytes());
+        cipher_byte = md.digest();
+        StringBuilder sbsha256 = new StringBuilder(2 * cipher_byte.length);
+        for(byte b: cipher_byte) {
+          sbsha256.append(String.format("%02x", b&0xff) );
+        }
+        output.add("email:" + email + ", sha256:" + sbsha256.toString());
+
+        stb.append("update helloherokupostgresql.contact set Email_SHA256__c = '" + sbsha256.toString() + "' where sfid = '" + sfid + "';");
+      }
+
+      stmt.executeUpdate(stb.toString());
+
+      model.put("records", output);
+      // model.put("dbUrl", dbUrl);
+      return "sha256";
     } catch (Exception e) {
       model.put("message", e.getMessage());
       return "error";
