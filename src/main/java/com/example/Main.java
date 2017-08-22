@@ -86,6 +86,7 @@ public class Main {
 
   @RequestMapping("/sha256")
   String sha256(Map<String, Object> model) {
+    logger.info("sha256 was called");
     try (Connection connection = dataSource.getConnection()) {
       Statement stmt = connection.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT sfid, email FROM helloherokupostgresql.contact");
@@ -106,6 +107,7 @@ public class Main {
           sbsha256.append(String.format("%02x", b&0xff) );
         }
         output.add("email:" + email + ", sha256:" + sbsha256.toString());
+        logger.info("email:" + email + ", sha256:" + sbsha256.toString());
 
         stb.append("update helloherokupostgresql.contact set Email_SHA256__c = '" + sbsha256.toString() + "' where sfid = '" + sfid + "';");
       }
@@ -117,6 +119,7 @@ public class Main {
       return "sha256";
     } catch (Exception e) {
       model.put("message", e.getMessage());
+      logger.info(e.getMessage());
       return "error";
     }
   }
