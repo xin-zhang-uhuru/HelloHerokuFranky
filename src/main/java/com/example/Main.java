@@ -110,15 +110,15 @@ public class Main {
           for(byte b: cipher_byte) {
              sbsha256.append(String.format("%02x", b&0xff) );
           }
-        }
 
+          stb.append("update helloherokupostgresql.contact set Email_SHA256__c = '" + sbsha256.toString() + "' where sfid = '" + sfid + "';");
+        }
+        
         output.add("email:" + email + ", sha256:" + sbsha256.toString());
         logger.info("email:" + email + ", sha256:" + sbsha256.toString());
-
-        stb.append("update helloherokupostgresql.contact set Email_SHA256__c = '" + sbsha256.toString() + "' where sfid = '" + sfid + "';");
       }
 
-      //stmt.executeUpdate(stb.toString());
+      stmt.executeUpdate(stb.toString());
 
       model.put("records", output);
       // model.put("dbUrl", dbUrl);
