@@ -88,7 +88,6 @@ public class Main {
   String sha256(Map<String, Object> model) {
     logger.info("sha256 was called");
     try (Connection connection = dataSource.getConnection()) {
-      /*
       Statement stmt = connection.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT sfid, email FROM helloherokupostgresql.contact");
       StringBuilder stb = new StringBuilder();
@@ -113,11 +112,11 @@ public class Main {
         stb.append("update helloherokupostgresql.contact set Email_SHA256__c = '" + sbsha256.toString() + "' where sfid = '" + sfid + "';");
       }
 
-      stmt.executeUpdate(stb.toString());
+      //stmt.executeUpdate(stb.toString());
 
       model.put("records", output);
       // model.put("dbUrl", dbUrl);
-      */
+
       return "sha256";
     } catch (Exception e) {
       model.put("message", e.getMessage());
