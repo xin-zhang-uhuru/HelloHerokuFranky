@@ -98,14 +98,20 @@ public class Main {
         String sfid = rs.getString("sfid");
         String email = rs.getString("email");
         byte[] cipher_byte;
+        StringBuilder sbsha256;
         
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(email.getBytes());
-        cipher_byte = md.digest();
-        StringBuilder sbsha256 = new StringBuilder(2 * cipher_byte.length);
-        for(byte b: cipher_byte) {
-          sbsha256.append(String.format("%02x", b&0xff) );
+        if (email == null || email.equals("")) {
+          sbsha256 = new StringBuilder("");
+        } else {
+          MessageDigest md = MessageDigest.getInstance("SHA-256");
+          md.update(email.getBytes());
+          cipher_byte = md.digest();
+          sbsha256 = new StringBuilder(2 * cipher_byte.length);
+          for(byte b: cipher_byte) {
+             sbsha256.append(String.format("%02x", b&0xff) );
+          }
         }
+
         output.add("email:" + email + ", sha256:" + sbsha256.toString());
         logger.info("email:" + email + ", sha256:" + sbsha256.toString());
 
